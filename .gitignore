@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# MIMIC-IV / PhysioNet restricted data — DO NOT PUBLISH (DUA)
+# Cache is keyed by clinical note IDs → treat as restricted derived data.
+.llm_cache.json
+*.cache.json
+
+# Datasets / challenge release (restricted or large — keep out of git)
+*.csv
+*.zip
+*.parquet
+data/
+snomed-ct-entity-linking-challenge*/
+
+# Local / editor
+.env
+.DS_Store
+.claude/
