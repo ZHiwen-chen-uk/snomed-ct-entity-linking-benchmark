@@ -179,7 +179,9 @@ def main():
             if not src.is_file():
                 continue
             # dotfile caches are keyed by note id and character offset
-            if src.name in WITHHELD or src.name.startswith("."):
+            if src.name.startswith("."):
+                continue
+            if src.name in WITHHELD:
                 withheld_found.append(src.relative_to(ROOT))
                 continue
             if src.suffix not in RESULT_SUFFIXES:
@@ -187,7 +189,12 @@ def main():
             rel = src.relative_to(ROOT)
             dst = OUT / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, dst)
+            if src.suffix == ".md":
+                text = src.read_text(encoding="utf-8")
+                dst.write_text(text.replace(str(ROOT), "<project root>"),
+                               encoding="utf-8")
+            else:
+                shutil.copy2(src, dst)
             copied.append(rel)
 
     # ship the README, the environment and this builder, so that the package is

@@ -1,7 +1,7 @@
 # Candidate Generation Hybrid Results
 
 Sample file: `.sample600.json`
-SNOMED dir: `<path to SnomedCT_InternationalRF2_PRODUCTION_20260601T120000Z>`
+SNOMED dir: `<project root>\SnomedCT_InternationalRF2_PRODUCTION_20260601T120000Z`
 
 ## Overall
 
