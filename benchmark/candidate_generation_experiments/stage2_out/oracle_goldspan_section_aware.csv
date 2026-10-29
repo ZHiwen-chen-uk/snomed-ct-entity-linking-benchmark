@@ -1,0 +1,5 @@
+scope,n_gold,pool_reachability,P(pick|reachable),gold_span_top1,headroom_retrieval (est.),headroom_ranking (exact)
+all,18676,0.9697,0.7354,0.7131,0.0223,0.2566
+head,11446,0.9938,0.7567,0.7521,0.0047,0.2417
+torso,4366,0.9792,0.7261,0.7109,0.0151,0.2682
+tail,2864,0.8589,0.6528,0.5608,0.0921,0.2982

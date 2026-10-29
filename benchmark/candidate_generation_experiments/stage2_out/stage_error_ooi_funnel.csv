@@ -1,0 +1,4 @@
+ranker,n_picks,pick_train_freq_median,picks_freq_zero_share,distinct_concepts,top3_share,top_pick,top_pick_share,top_pick_train_freq,n_ranking_errors,errors_demoted_from_pool_top
+"supervised, standard",1474,6,0.1764,866,0.0285,73829009 Right atrial structure,0.0109,24,1099,0.3758
+"supervised, LONO",1474,0,0.7042,1004,0.019,11157007 Ventricular bigeminy,0.0068,0,435,0.069
+gated,1474,0,0.8087,1006,0.0204,11157007 Ventricular bigeminy,0.0068,0,401,0.0923

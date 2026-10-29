@@ -1,0 +1,5 @@
+scope,n_gold,oracle_span_link_acc,detection_recall@IoU,e2e_recall,linking|detected,detection_cost
+all,18676,0.7131,0.811,0.5836,0.7196,0.1295
+head,11446,0.7521,0.8607,0.6601,0.767,0.092
+torso,4366,0.7109,0.7762,0.5442,0.7011,0.1667
+tail,2864,0.5608,0.6655,0.3376,0.5073,0.2232

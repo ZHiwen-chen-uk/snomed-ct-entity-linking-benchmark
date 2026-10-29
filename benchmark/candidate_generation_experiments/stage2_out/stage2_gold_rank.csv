@@ -1,0 +1,13 @@
+ranker,scope,n_ranking_errors,gold_rank_median,gold_rank_p25,gold_rank_p75,gold_in_top3,gold_in_top10,gold_beyond_30
+gated,all,4792,3,2,7,0.5762,0.8214,0.0426
+gated,head,2767,2,2,4,0.7047,0.918,0.0123
+gated,torso,1171,4,2,12,0.4381,0.7259,0.0692
+gated,tail,854,6,3,16,0.3489,0.6393,0.1042
+gated,tail_out_of_index,401,6,3,14,0.3516,0.6708,0.0698
+gated,tail_in_index,453,6,3,20,0.3466,0.6115,0.1347
+"supervised, LONO",all,1883,3,2,6,0.6123,0.8587,0.0212
+"supervised, LONO",head,478,2,2,3,0.8389,0.9686,0.0
+"supervised, LONO",torso,645,3,2,5,0.6357,0.9039,0.0016
+"supervised, LONO",tail,760,4,2,10,0.45,0.7513,0.0513
+"supervised, LONO",tail_out_of_index,435,6,3,14,0.3908,0.708,0.0667
+"supervised, LONO",tail_in_index,325,3,2,8,0.5292,0.8092,0.0308

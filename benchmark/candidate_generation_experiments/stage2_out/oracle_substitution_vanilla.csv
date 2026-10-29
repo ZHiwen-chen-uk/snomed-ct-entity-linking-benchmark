@@ -1,0 +1,5 @@
+scope,n_gold,current_e2e,perfect_detection (measured),d_detection,perfect_retrieval (est.),d_retrieval,perfect_ranking (exact),d_ranking,perfect_det+retr (est.)
+all,18676,0.565,0.7131,0.1481,0.5785,0.0135,0.7698,0.2048,0.734
+head,11446,0.6381,0.7521,0.1139,0.6397,0.0016,0.8339,0.1958,0.7652
+torso,4366,0.514,0.7109,0.197,0.523,0.009,0.7339,0.2199,0.7004
+tail,2864,0.3506,0.5608,0.2102,0.4074,0.0568,0.5684,0.2179,0.6167

@@ -1,111 +1,180 @@
-# SNOMED CT Entity Linking — rough benchmark
+# Reproducibility package
 
-A minimal, runnable benchmark harness for the
-[DrivenData SNOMED CT Entity Linking Challenge](https://www.drivendata.org/competitions/258/competition-snomed-ct/),
-built on the public release `snomed-ct-entity-linking-challenge-1.2.1`.
+Code and result tables for *A Stage-Wise Error Attribution for End-to-End SNOMED
+CT Clinical Entity Linking*.
 
-## Task
-Given a clinical note, output character spans `[start, end)` and link each to a
-SNOMED CT `concept_id`. Two sub-problems at once: **span detection** +
-**concept normalization**.
+Section 1 lists every table and figure in the dissertation next to the script
+that produced it and the file the numbers were read from. Use it to trace any
+number in the text back to a command.
 
-## Data (public release)
-- 272 annotated notes (`train_notes.csv`), ~10k chars each.
-- 75,491 annotations, 6,595 unique concepts (`train_annotations.csv`).
-- `annotation_type`: `train` (204 notes) / `test` (68 notes, disjoint) /
-  `proposed_ACCEPTED` (model-proposed, human-accepted; scattered).
+A note on the layout. It copies the working repository instead of grouping
+scripts by topic, because each script finds its imports relative to its own
+position on disk. Tidying the files into `stage1/`, `stage2/` and `analysis/`
+folders would stop all of them running.
 
-## Split used here
-Notes with any `test` annotation → **test set (68)**; the rest → **train (204)**.
-Note-level, so no span leaks between splits. Gold for a test note = all its
-annotations.
+---
 
-## Metric — `metric.py`
-Official-style **macro-averaged character IoU**: per concept_id, intersection /
-union of character positions aggregated across all notes, then mean over
-concepts (every concept weighted equally → rare concepts matter).
+## 1. What produced each table and figure
 
-## Two harnesses in this folder
-
-### 1. `run_benchmark.py` — trivial dictionary reference
-Surface form → most frequent concept_id, greedy longest-phrase matching. The
-"does the metric work + what does a trivial system get" anchor.
-```
-python run_benchmark.py
-```
-
-### 2. `run_experiments.py` — four-group ontology comparison (the dissertation skeleton)
-Implements the proposal's controlled comparison on the candidate-**ranking**
-sub-problem (gold spans given; pick the right SNOMED concept from a shared,
-high-recall candidate set):
-
-| group | what it does |
-|---|---|
-| **Baseline** | LLM ranks candidates, no ontology signal |
-| **A: Pre-filter** | predicted semantic type removes incompatible candidates → rank |
-| **B: Rerank** | rank → hierarchy-distance penalty (β) demotes structurally isolated candidates |
-| **C: Filter+Rerank** | A then B |
-
-```
-python run_experiments.py        # prints tables, writes figures/*.png
-```
-Reports entity-level accuracy, macro char-IoU (spans fixed to gold, so it
-reflects *linking* quality), candidate recall@k, and accuracy stratified by
-**ambiguity type / concept frequency / ontology depth**.
-
-**Module map** (each is a one-class swap point):
-- `data.py` — load, split, `CandidateGenerator` (lexical; ← real SNOMED synonym index)
-- `ontology.py` — `Ontology` interface; `MockOntology` (synthetic, runs today) + `SnomedOntology` (stub ← real RF2 files)
-- `pipeline.py` — `LLMRanker`/`PriorRanker` (← real LLM), `SemTypePredictor` (← fine-tuned model), the 4 strategies
-- `evaluate.py` — metrics + stratification · `run_experiments.py` — runner + charts
-
-> ⚠️ **MockOntology produces SYNTHETIC types/hierarchy** — `run_experiments.py`
-> numbers validate the *pipeline plumbing, metrics, stratification, and charts*,
-> NOT the science. Replace `MockOntology`→`SnomedOntology` and
-> `PriorRanker`→ a real LLM ranker before quoting any result.
-
-### Swapping in real SNOMED CT + LLM
-1. `SnomedOntology(release_dir)`: parse semantic tags from FSNs (`sct2_Description`)
-   and the is-a graph (`sct2_Relationship`, typeId `116680003`) for `depth()`/`distance()`.
-2. `LLMRanker` subclass: prompt the model (latest Claude, e.g. `claude-opus-4-8`)
-   with `mention.context` + candidate preferred terms; parse its choice.
-3. `SemTypePredictor.predict()`: replace the simulated draw with fine-tuned
-   model inference. Everything downstream is unchanged.
-
-## Current result
-| | macro char IoU |
-|---|---|
-| dictionary baseline (this repo, public test split) | **0.2927** |
-| ├─ head (frequent) concepts | 0.458 |
-| └─ tail (rare) concepts | 0.148 |
-
-### Official challenge numbers (private held-out test set, verified Jun 2026)
-| | macro char IoU | approach |
+| Dissertation artefact | Script | Result file |
 |---|---|---|
-| DrivenData/Veratai benchmark | **0.1794** | DeBERTa-v3-large span detect → link |
-| median final submission | 0.2572 | (range 0.006–0.4202) |
-| 🥉 MITEL-UNIUD (3rd) | 0.3777 | decoder (Faiss + Mistral) |
-| 🥈 SNOBERT (2nd) | 0.4194 | encoder (fine-tuned BERT) |
-| 🥇 KIRI (1st) | **0.4202** | dictionary-based |
+| Table 2, corpus statistics | `dataset_stats.py` | printed, recomputed on demand |
+| Table 3, methods inventory | written from the scripts below | — |
+| Table 4, the four training-derived features | `stage2_feature_hygiene.py`, `stage2_lono_training.py` | `stage2_out/stage2_feature_hygiene.csv` |
+| Table 5, span detection | `stage0_ner/run_ner.py` | `stage0_ner/result/STAGE0_RESULTS.md`, `stage0_metrics.json` |
+| Table 6, candidate ranking | `stage2_reranker_full.py`, `stage2_feature_hygiene.py`, `stage2_lono_training.py`, `stage2_gated.py`, `stage2_unified.py` | `stage2_out/stage2_lono_training.csv`, `stage2_feature_hygiene.csv`, `stage2_unified.csv` |
+| Table 6, confidence intervals | `stage2_bootstrap_ci.py` | `stage2_out/stage2_bootstrap_estimates.csv`, `stage2_bootstrap_diffs.csv` |
+| Table 7, end to end | `stage0_chain_e2e_lono.py`, with `stage0_chain_e2e.py` for the published gated row | `stage0_ner/result/STAGE0_E2E_LONO.csv` |
+| Table 8, BC5CDR replication | `../replication_bc5cdr/replicate_blind_spot.py` | printed by the script |
+| Table 9, ranking-error taxonomy | `stage2_error_taxonomy.py` | `stage2_out/stage2_error_taxonomy.csv`, `stage2_gold_rank.csv` |
+| Table 10, representative failures | `stage_error_examples.py` | withheld, see section 4 |
+| Figure 1, dataset split and pipeline | `make_fig_dataset_split.py` | writes `fig5_dataset_split.png` |
+| Figure 2, marginal value per stage | `make_figures.py`, from `stage_oracle_substitution_lono.py` | `stage2_out/oracle_substitution_lono_vanilla.csv` → `fig1_bottleneck_migration.png` |
+| Figure 3, induced-mismatch sweep | `make_figures.py`, from `stage2_index_dose_response.py` | `stage2_out/stage2_index_dose_response.csv` → `fig4_dose_response.png` |
+| Figure 4, the two halves of the rare stratum | `make_figures.py`, from `stage2_bootstrap_ci.py` | `stage2_out/stage2_bootstrap_estimates.csv` → `fig2_two_tails.png` |
+| Figure 5, review triage | `make_figures.py`, from `stage2_abstention.py` | `stage2_out/stage2_abstention_budget.csv` → `fig3_triage.png` |
+| §3.2, retrieval and fusion | `run_full_local.py`, `test_rrf_fusion.py`, `abbrev_full_scale.py` | `rrf_fusion_eval.csv`, `stage2_out/abbrev_fullscale.csv` |
+| §3.3, semantic type as filter and as prior | `stage3_ontology_constraint.py` | `stage2_out/STAGE3_RESULTS.md` |
+| §3.3, open-weight language-model probe | `stage2_export_llm_tail.py`, `stage2_llm_tail.py`, `colab_llm_tail_ranker.py` | `stage2_out/STAGE2_LLM_TAIL.md` |
+| §3.5, the challenge's official metric | `stage0_challenge_metric.py` | `stage2_out/challenge_metric.csv` |
+| §3.6, the three-factor identity | `stage_oracle_substitution_lono.py` | `stage2_out/oracle_identity_lono_vanilla.csv` |
+| §4.5, the full-scale audit of earlier claims | `stage_audit_fullscale.py` | `stage2_out/fullscale_audit.csv` |
 
-Sources: [JAMIA / Davidson et al. 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12361850/),
-[DrivenData winners blog](https://drivendata.co/blog/snomed-ct-entity-linking-challenge-winners),
-[SNOBERT (arXiv 2405.16115)](https://arxiv.org/html/2405.16115v1).
-KIRI vs SNOBERT 95% CIs overlap → not significantly different.
+Watch out for the figure filenames. They do not match the figure numbers, because
+the figures were made before the chapters were reordered. Go by the table above.
 
-> **Not directly comparable to the live leaderboard** — that used a *private,
-> held-out* test set, while this repo scores on a 68-note split of the *public*
-> release. The repo's 0.2927 sitting above the official 0.1794 benchmark is
-> expected: (a) easier/seen public test notes, (b) a surface-form dictionary
-> is genuinely strong here — note the **winner (KIRI) was also dictionary-based**.
-> The head/tail gap is the dissertation hook: an ontology-aware filter/reranker
-> should lift the long tail most.
+The five figures can be rebuilt from the tables here, without any access to the
+corpus, and the PNGs come out byte-identical to the ones in the submitted
+dissertation:
 
-## Next steps for the dissertation
-- [x] Four-group comparison harness (Baseline / A / B / C) — `run_experiments.py`
-- [x] Metrics: entity-level accuracy, char-IoU, recall@k; stratified by
-      ambiguity / frequency / depth; chart output
-- [ ] Replace `MockOntology` with real SNOMED CT (`SnomedOntology`)
-- [ ] Replace `PriorRanker` with a real LLM ranker
-- [ ] Replace simulated `SemTypePredictor` with a fine-tuned semantic-type model
-- [ ] Tune β and the filter confidence threshold on a validation split
+```
+cd benchmark/candidate_generation_experiments
+python make_figures.py            # figures 2 to 5
+python make_fig_dataset_split.py  # figure 1
+```
+
+## 2. Order of the runs
+
+Each stage caches what the next one reads, so they have to run in this order.
+
+```
+# stage 1, build the retrieval indexes once (slow, then cached)
+python build_dense_index.py                 # SapBERT embeddings, ~1 GB cache
+python test_candidate_generation.py         # builds the char n-gram index
+python run_full_local.py                    # reachability and recall@k
+
+# stage 0, span detection (needs a GPU; I ran this on Colab)
+python stage0_ner/build_bio_data.py
+python stage0_ner/run_ner.py
+
+# stage 2, ranking over the fixed pool
+python stage2_gated.py                      # heuristic, and the shared pool cache
+python stage2_reranker_full.py              # supervised reranker, ~2.5 h on CPU
+python stage2_feature_hygiene.py            # the feature-deletion repair
+python stage2_lono_training.py              # the leave-one-note-out repair
+
+# end to end
+python stage0_chain_e2e_lono.py             # both detector variants, ~27 min
+
+# analysis
+python stage_oracle_substitution_lono.py
+python stage2_error_taxonomy.py
+python stage2_bootstrap_ci.py
+python stage2_abstention.py
+python stage2_index_dose_response.py
+python stage0_challenge_metric.py
+
+# figures
+python make_figures.py
+python make_fig_dataset_split.py
+```
+
+`run_fullscale_chain.sh` runs the expensive stage-2 sequence in the right order.
+Do not run the two heavy scripts at the same time. Both load the same 1 GB
+embedding matrix and the machine runs out of memory.
+
+On Windows, set `KMP_DUPLICATE_LIB_OK=TRUE` first or the OpenMP runtime aborts.
+
+## 3. Data and models to obtain separately
+
+None of this can be redistributed, so it is not here. Each script sets its paths
+at the top.
+
+* **SNOMED CT Entity Linking Challenge corpus**, release 1.2.1, from PhysioNet
+  under a credentialed data-use agreement. Holds the annotations and the MIMIC-IV
+  discharge summaries.
+* **SNOMED CT International RF2**, production release 2026-06-01, from SNOMED
+  International or the UK Terminology Server, under an affiliate licence.
+* **SapBERT** (`cambridgeltl/SapBERT-from-PubMedBERT-fulltext`) and
+  **PubMedBERT**, from Hugging Face. Both download on first use.
+* **BC5CDR** and the **CTD** vocabularies, needed only for the replication, from
+  BioCreative and the Comparative Toxicogenomics Database.
+
+## 4. Files held back under the data-use agreement
+
+MIMIC-IV note text cannot be redistributed. Thirteen result files carry note text, or
+one row per mention of a note, so they are not in this package even though the
+scripts that write them are. Each one regenerates once you have the corpus.
+
+| File | What is in it | Regenerate with |
+|---|---|---|
+| `stage_error_examples_all.csv` | one row per failure, with the note text around each mention | `python stage_error_examples.py` |
+| `stage_error_examples_shortlist.csv` | the same, filtered | same |
+| `STAGE_ERROR_EXAMPLES.md` | quotes mention text and its context | same |
+| `abbrev_acronym_slice_misses.csv` | acronym surface forms taken from notes | `python abbrev_full_scale.py` |
+| `abbrev_new_gold_examples.csv` | the same | same |
+| `dense_new_gold_examples.csv` | mention text recovered by dense retrieval | `python run_full_local.py` |
+| `hybrid_candidate_details.csv` | one row per mention, with note ids and spans | `python test_candidate_generation.py` |
+| `stage0_pred_spans_vanilla.jsonl` | predicted character offsets for every held-out note | `python stage0_ner/run_ner.py` |
+| `stage0_pred_spans_section_aware.jsonl` | the same, other detector variant | same |
+| `GRF_OVER_DENSE_RESULTS.md` | mention text next to the concepts it was linked to | `python grf_over_dense_test.py` |
+| `.llm_tail_*_cache.json`, `.stage2_llm_cache.json` | model answers keyed by note id and character offset | `python stage2_llm_tail.py` |
+
+Table 10 of the dissertation quotes ten mentions. That is a minimal illustration
+and falls under the same agreement.
+
+## 5. Determinism
+
+Every script fixes its seeds and breaks candidate ties deterministically, so the
+reported numbers come back the same on a re-run. This is not decoration. An
+earlier version of the replication took ties from `Counter.most_common` and from
+set iteration order, and the headline figure moved by 13 points between runs. Two
+probes now check for it, `replication_bc5cdr/probe_determinism.py` and
+`diag_nondet.py`. Run both after touching anything in retrieval.
+
+## 6. Environment
+
+The results were produced on Windows with Python 3.8.8, CPU only, apart from the
+two transformer training runs, which used a Colab GPU.
+
+```
+numpy==1.20.1
+pandas==1.2.4
+scikit-learn==0.24.1
+scipy==1.6.2
+torch==2.4.1
+transformers==4.30.2
+matplotlib==3.5.1
+```
+
+## 7. Included but not reported in the dissertation
+
+These were part of the work, and no number in the dissertation rests on them.
+They are here so that nothing looks hidden.
+
+* `grf_over_dense_test.py`, a graph random-walk expansion over the dense pool. It
+  recovered too few concepts to keep.
+* `stage2_export_crossencoder_data.py` and `colab_crossencoder.py`, the
+  cross-encoder. Its per-mention outputs were not saved, which the Table 6
+  caption says.
+* the `test_*.py` scripts, which are development harnesses and not unit tests.
+
+## 8. Integrity
+
+`MANIFEST.csv` gives the size and SHA-256 of every file in the package. It cannot
+list itself.
+
+Nothing here was assembled by hand. `build_reproducibility_package.py` works out
+which local modules the scripts import, copies those, copies the aggregate result
+tables, leaves out the files in section 4, and writes the manifest. Running it
+again rebuilds the directory as it stands.

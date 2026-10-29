@@ -1,0 +1,13 @@
+ranker,scope,share_of_corpus,share_of_20%_queue,enrichment,errors_of_this_scope_captured
+gated,all,1.0,1.0,1.0,0.1874
+gated,head,0.6129,0.7154,1.17,0.2347
+gated,torso,0.2338,0.222,0.95,0.1957
+gated,tail,0.1534,0.0627,0.41,0.0723
+gated,tail_out_of_index,0.0789,0.0107,0.14,0.0492
+gated,tail_in_index,0.0744,0.0519,0.7,0.1044
+"supervised, LONO",all,1.0,1.0,1.0,0.7717
+"supervised, LONO",head,0.6129,0.2975,0.49,0.8179
+"supervised, LONO",torso,0.2338,0.3202,1.37,0.7663
+"supervised, LONO",tail,0.1534,0.3823,2.49,0.7532
+"supervised, LONO",tail_out_of_index,0.0789,0.23,2.91,0.7503
+"supervised, LONO",tail_in_index,0.0744,0.1523,2.05,0.7588

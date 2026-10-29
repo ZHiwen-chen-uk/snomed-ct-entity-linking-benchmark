@@ -1,0 +1,9 @@
+ranker,scope,n_gold,pool_reachability,P(pick|reachable),gold_span_top1,headroom_retrieval (est.),headroom_ranking (exact)
+gated,all,18676,0.9697,0.7354,0.7131,0.0222,0.2566
+gated,head,11446,0.9938,0.7567,0.7521,0.0047,0.2417
+gated,torso,4366,0.9792,0.7261,0.7109,0.0151,0.2682
+gated,tail,2864,0.8593,0.6526,0.5608,0.0918,0.2985
+"supervised, LONO",all,18676,0.9697,0.896,0.8689,0.0271,0.1008
+"supervised, LONO",head,11446,0.9938,0.958,0.952,0.0059,0.0418
+"supervised, LONO",torso,4366,0.9792,0.8491,0.8314,0.0177,0.1477
+"supervised, LONO",tail,2864,0.8593,0.6912,0.5939,0.0973,0.2654

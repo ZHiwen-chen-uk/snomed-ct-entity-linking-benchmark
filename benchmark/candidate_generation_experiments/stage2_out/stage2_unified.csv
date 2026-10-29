@@ -1,0 +1,7 @@
+ranker,all,head,torso,tail
+oracle (ceiling),0.9697,0.9938,0.9792,0.8589
+rrf_rank1 (no ranker),0.551,0.5683,0.5957,0.4134
+dense_only,0.4765,0.4541,0.524,0.4934
+type_only (Group A soft),0.6961,0.7537,0.6995,0.4609
+gated (type / dense),0.7131,0.7521,0.7109,0.5608
+cross-encoder (PubMedBERT),0.773,0.87,0.681,0.522

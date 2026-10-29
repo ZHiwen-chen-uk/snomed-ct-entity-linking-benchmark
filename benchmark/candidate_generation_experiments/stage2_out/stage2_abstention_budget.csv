@@ -1,0 +1,31 @@
+ranker,signal,review_budget,errors_captured,post_review_accuracy,precision_of_queue
+gated,maxprob,0.05,0.0823,0.7367,0.4722
+gated,maxprob,0.1,0.1349,0.7518,0.387
+gated,maxprob,0.2,0.2469,0.7839,0.3542
+gated,maxprob,0.3,0.3619,0.8169,0.3461
+gated,maxprob,0.5,0.5614,0.8742,0.3221
+gated,margin,0.05,0.042,0.7252,0.2409
+gated,margin,0.1,0.086,0.7378,0.2468
+gated,margin,0.2,0.1706,0.762,0.2447
+gated,margin,0.3,0.2592,0.7875,0.2479
+gated,margin,0.5,0.4645,0.8464,0.2665
+gated,oracle (ceiling),0.05,0.1743,0.7631,1.0
+gated,oracle (ceiling),0.1,0.3486,0.8131,1.0
+gated,oracle (ceiling),0.2,0.6971,0.9131,1.0
+gated,oracle (ceiling),0.3,1.0,1.0,0.9563
+gated,oracle (ceiling),0.5,1.0,1.0,0.5738
+"supervised, LONO",maxprob,0.05,0.2917,0.9072,0.7645
+"supervised, LONO",maxprob,0.1,0.4861,0.9326,0.637
+"supervised, LONO",maxprob,0.2,0.7467,0.9668,0.4894
+"supervised, LONO",maxprob,0.3,0.8913,0.9858,0.3894
+"supervised, LONO",maxprob,0.5,0.969,0.9959,0.254
+"supervised, LONO",margin,0.05,0.2974,0.9079,0.7794
+"supervised, LONO",margin,0.1,0.4906,0.9332,0.6429
+"supervised, LONO",margin,0.2,0.7712,0.97,0.5055
+"supervised, LONO",margin,0.3,0.8877,0.9853,0.3878
+"supervised, LONO",margin,0.5,0.9722,0.9964,0.2549
+"supervised, LONO",oracle (ceiling),0.05,0.3815,0.9189,1.0
+"supervised, LONO",oracle (ceiling),0.1,0.7631,0.9689,1.0
+"supervised, LONO",oracle (ceiling),0.2,1.0,1.0,0.6554
+"supervised, LONO",oracle (ceiling),0.3,1.0,1.0,0.4369
+"supervised, LONO",oracle (ceiling),0.5,1.0,1.0,0.2622

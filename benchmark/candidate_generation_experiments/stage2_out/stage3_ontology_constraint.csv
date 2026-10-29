@@ -1,0 +1,5 @@
+policy,all,head,torso,tail,cross-branch,sibling,unambiguous
+oracle,0.9682,0.9931,0.978,0.8601,0.9682,1.0,
+dense_only,0.4809,0.457,0.5283,0.5046,0.4807,1.0,
+soft_type,0.6056,0.6218,0.6039,0.5469,0.6055,1.0,
+hard_constraint,0.6135,0.6311,0.6138,0.5466,0.6134,1.0,

@@ -1,0 +1,13 @@
+# Stage 2 #1 — Gated ranker, full 23k (eval split)
+
+eval n=18676 val n=4455
+
+global best (0, 0.5, 0); gate: seen-form (0, 0.5, 0), novel-form (0.5, 0.5, 0)
+
+| policy | all | head | torso | tail |
+| --- | --- | --- | --- | --- |
+| oracle | 0.9697 | 0.9938 | 0.9792 | 0.8589 |
+| type_only | 0.6961 | 0.7537 | 0.6995 | 0.4609 |
+| dense_only | 0.4765 | 0.4541 | 0.5240 | 0.4934 |
+| best_global(0, 0.5, 0) | 0.6961 | 0.7537 | 0.6995 | 0.4609 |
+| gated(seen->type,novel->dense) | 0.7131 | 0.7521 | 0.7109 | 0.5608 |

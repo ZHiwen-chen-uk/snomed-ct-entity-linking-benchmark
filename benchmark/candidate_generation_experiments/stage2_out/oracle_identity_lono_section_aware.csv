@@ -1,0 +1,9 @@
+ranker,scope,n_gold,P(detected),P(reach|det),"P(pick|det,reach)",e2e,identity_check
+gated,all,18676,0.811,0.9742,0.7387,0.5836,0.5836
+gated,head,11446,0.8607,0.9963,0.7698,0.6601,0.6601
+gated,torso,4366,0.7762,0.9823,0.7137,0.5442,0.5442
+gated,tail,2864,0.6655,0.8452,0.6002,0.3376,0.3376
+"supervised, LONO",all,18676,0.811,0.9742,0.8918,0.7046,0.7046
+"supervised, LONO",head,11446,0.8607,0.9963,0.96,0.8232,0.8232
+"supervised, LONO",torso,4366,0.7762,0.9823,0.8153,0.6216,0.6216
+"supervised, LONO",tail,2864,0.6655,0.8452,0.635,0.3572,0.3572

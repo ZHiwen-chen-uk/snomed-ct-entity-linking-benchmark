@@ -1,0 +1,9 @@
+ranker,scope,n_gold,current_e2e,perfect_detection (measured),d_detection,perfect_retrieval (est.),d_retrieval,perfect_ranking (exact),d_ranking,perfect_det+retr (est.)
+gated,all,18676,0.565,0.7131,0.1481,0.5785,0.0135,0.7698,0.2048,0.734
+gated,head,11446,0.6381,0.7521,0.1139,0.6397,0.0016,0.8339,0.1958,0.7652
+gated,torso,4366,0.514,0.7109,0.197,0.523,0.009,0.7339,0.2199,0.7004
+gated,tail,2864,0.3506,0.5608,0.2102,0.4074,0.0568,0.5684,0.2179,0.6167
+"supervised, LONO",all,18676,0.683,0.8689,0.1859,0.6994,0.0163,0.7698,0.0868,0.8873
+"supervised, LONO",head,11446,0.7956,0.952,0.1565,0.7976,0.002,0.8339,0.0384,0.954
+"supervised, LONO",torso,4366,0.5934,0.8314,0.238,0.6038,0.0104,0.7339,0.1404,0.8087
+"supervised, LONO",tail,2864,0.3698,0.5939,0.2242,0.4297,0.06,0.5684,0.1987,0.6505
